@@ -28,6 +28,7 @@ node {
 
     stage('Deploy Sock-Shop') {
         withCredentials([usernamePassword(credentialsId: 'twistlock_creds', passwordVariable: 'TL_PASS', usernameVariable: 'TL_USER')]) {
+            sh 'kubectl delete secret nexus-pull-secret --ignore-not-found=true'
             sh "kubectl create secret docker-registry nexus-pull-secret -n sock-shop --docker-server=https://nexusdocker-master-furyan.gbrandyburg.demo.twistlock.com --docker-username=$TL_USER --docker-password=$TL_PASS --docker-email=gbrandyburg@paloaltonetworks.com"
             sh 'kubectl delete --ignore-not-found=true -f complete-demo.yaml'
             sh 'kubectl apply -f complete-demo.yaml'
